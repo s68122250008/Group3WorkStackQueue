@@ -1,19 +1,19 @@
 Test ID,Category,Input / Action,Expected Result,Actual Result,Status
-TC01,Normal Case,"INSERT ""AI"" at position 5 into ""HelloWorld""","Text becomes ""HelloAIWorld""",,
-TC02,Normal Case + Undo,Insert then UNDO,"Text reverts to ""HelloWorld""",,
-TC03,Normal Case,"DELETE 2 chars at position 5 from ""HelloWorld""","Text becomes ""Hellorld"" (2 chars ""Wo"" removed)",,
-TC04,Normal Case + Undo,Delete then UNDO,Deleted text is restored exactly,,
-TC05,Normal Case,"REPLACE ""Wo"" with ""XYZ"" at position 5","Text becomes ""HelloXYZrld""",,
-TC06,Normal Case + Undo,Replace then UNDO,Text reverts to text before REPLACE,,
-TC07,Undo/Redo Chain,UNDO then REDO,Text matches state right before the UNDO,,
-TC08,Boundary Case,UNDO multiple times until undo stack empty,"Each undo succeeds until stack empty, further undo returns warning, no crash",,
-TC09,Boundary / Invalid,UNDO when undo stack is already empty (fresh editor),"Program shows warning ""nothing to undo"", does not crash",,
-TC10,Boundary / Invalid,REDO when redo stack is empty,"Program shows warning ""nothing to redo"", does not crash",,
-TC11,Redo Invalidation,"UNDO once, then perform a NEW action (not redo)","Redo stack is cleared; REDO afterwards returns ""nothing to redo""",,
-TC12,Invalid Input,INSERT at a position beyond text length (e.g. position=999 on 5-char text),"Program rejects the action with a validation error, document unchanged",,
-TC13,Invalid Input,DELETE with length larger than remaining characters from position,"Program rejects the action with a validation error, document unchanged",,
-TC14,Empty Input,"Editor starts with empty document, immediately try DELETE","Program shows warning ""document is empty"", no crash",,
-TC15,Empty Input,"INSERT an empty string ("""")","Program shows warning, no state change, no stack push",,
-TC16,Position Boundary,INSERT at position 0 (very start) and at position = text length (very end),Both succeed and place the text at the correct edge,,
-TC17,System-specific,"Perform 10,000 sequential INSERT actions then UNDO all 10,000",All undos succeed in reverse order and document returns to original empty state,,
-TC18,Algorithm Comparison,Run identical action sequence on Algorithm A and Algorithm B,Both algorithms produce an identical final document text,,
+TC01,Normal Case,"INSERT ""AI"" at position 5 into ""HelloWorld""","Text becomes ""HelloAIWorld""","Inserted. Text is now: ""HelloAIWorld""",Pass
+TC02,Normal Case + Undo,Insert then UNDO,"Text reverts to ""HelloWorld""","Undo done. Text is now: ""HelloWorld""",Pass
+TC03,Normal Case,"DELETE 2 chars at position 5 from ""HelloWorld""","Text becomes ""Hellorld"" (2 chars ""Wo"" removed)","Deleted. Text is now: ""Hellorld""",Pass
+TC04,Normal Case + Undo,Delete then UNDO,Deleted text is restored exactly,"Undo done. Text is now: ""HelloWorld""",Pass
+TC05,Normal Case,"REPLACE ""Wo"" with ""XYZ"" at position 5","Text becomes ""HelloXYZrld""","Replaced. Text is now: ""HelloXYZrld""",Pass
+TC06,Normal Case + Undo,Replace then UNDO,Text reverts to text before REPLACE,"Undo done. Text is now: ""HelloWorld""",Pass
+TC07,Undo/Redo Chain,UNDO then REDO,Text matches state right before the UNDO,"Redo done. Text is now: ""HelloAIWorld""",Pass
+TC08,Boundary Case,UNDO multiple times until undo stack empty,"Each undo succeeds until stack empty, further undo returns warning, no crash","1st UNDO -> ""Hi"" | 2nd UNDO -> """" | 3rd UNDO -> Warning: nothing to undo (no crash)",Pass
+TC09,Boundary / Invalid,UNDO when undo stack is already empty (fresh editor),"Program shows warning ""nothing to undo"", does not crash","Warning: undo stack is empty, nothing to undo.",Pass
+TC10,Boundary / Invalid,REDO when redo stack is empty,"Program shows warning ""nothing to redo"", does not crash","Warning: redo stack is empty, nothing to redo.",Pass
+TC11,Redo Invalidation,"UNDO once, then perform a NEW action (not redo)","Redo stack is cleared; REDO afterwards returns ""nothing to redo""","After UNDO + new INSERT, REDO -> Warning: nothing to redo (redoStack correctly cleared)",Pass
+TC12,Invalid Input,INSERT at a position beyond text length (e.g. position=999 on 5-char text),"Program rejects the action with a validation error, document unchanged","Error: Invalid insert position (document unchanged = ""Hi"")",Pass
+TC13,Invalid Input,DELETE with length larger than remaining characters from position,"Program rejects the action with a validation error, document unchanged","Error: Invalid delete range (document unchanged = ""Hi"")",Pass
+TC14,Empty Input,"Editor starts with empty document, immediately try DELETE","Program shows warning ""document is empty"", no crash","Warning: document is empty, nothing to delete.",Pass
+TC15,Empty Input,"INSERT an empty string ("""")","Program shows warning, no state change, no stack push","Warning: inserted text is empty, no change made. (doc & stack size unchanged)",Pass
+TC16,Position Boundary,INSERT at position 0 (very start) and at position = text length (very end),Both succeed and place the text at the correct edge,"Inserted at pos 0 -> ""[Hi"", then at pos=len -> ""[Hi]"" (both succeeded correctly)",Pass
+TC17,System-specific,"Perform 10,000 sequential INSERT actions then UNDO all 10,000",All undos succeed in reverse order and document returns to original empty state,"10,000 INSERT then 10,000 UNDO -> doc="""" (empty), all 10,000 undos succeeded, no crash",Pass
+TC18,Algorithm Comparison,Run identical action sequence on Algorithm A and Algorithm B,Both algorithms produce an identical final document text,"Algorithm A result == Algorithm B result == ""XYZlloAIWorld"" (identical)",Pass
